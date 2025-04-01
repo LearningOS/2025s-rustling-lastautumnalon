@@ -11,7 +11,9 @@ fn main() {
 
     get_char(data.clone());
 
-    string_uppercase(data);
+    let data = string_uppercase(data);
+
+    println! ("data {}",data);
 }
 
 // Should not take ownership
@@ -20,8 +22,10 @@ fn get_char(data: String) -> char {
 }
 
 // Should take ownership
-fn string_uppercase(mut data: String) {
+fn string_uppercase(mut data: String) -> String {
     data.to_uppercase();
 
     println!("{}", data);
+
+    data
 }
