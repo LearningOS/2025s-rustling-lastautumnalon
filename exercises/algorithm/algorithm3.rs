@@ -4,9 +4,17 @@
 	you can use bubble sorting, insertion sorting, heap sorting, etc.
 */
 // I AM NOT DONE
-
-fn sort<T>(array: &mut [T]){
+use std::mem;
+fn sort<T: std::cmp::PartialOrd>(array: &mut [T]){
 	//TODO
+    for step in 0..array.len()-1 {
+        for i in 0..array.len()-1-step {
+            if (array[i] > array[i + 1])
+            {
+                array.swap(i,i+1);
+            }
+        }
+    }
 }
 #[cfg(test)]
 mod tests {

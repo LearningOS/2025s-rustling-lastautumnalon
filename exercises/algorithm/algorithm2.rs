@@ -7,6 +7,7 @@
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
+use std::clone::Clone;
 
 #[derive(Debug)]
 struct Node<T> {
@@ -15,7 +16,7 @@ struct Node<T> {
     prev: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Node<T> {
+impl<T:Clone> Node<T> {
     fn new(t: T) -> Node<T> {
         Node {
             val: t,
@@ -31,13 +32,14 @@ struct LinkedList<T> {
     end: Option<NonNull<Node<T>>>,
 }
 
-impl<T> Default for LinkedList<T> {
+impl<T:Clone> Default for LinkedList<T> {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl<T> LinkedList<T> {
+impl<T:Clone> LinkedList<T> 
+{
     pub fn new() -> Self {
         Self {
             length: 0,
@@ -74,12 +76,26 @@ impl<T> LinkedList<T> {
     }
 	pub fn reverse(&mut self){
 		// TODO
+        let mut p = self.start.clone().unwrap();
+        let mut q = self.end.clone().unwrap();
+        let mut i = 0i32;
+        let mut j = (self.length - 1) as i32;
+        while i < j {
+            let left_val = self.get(i).cloned().unwrap();
+            let right_val = self.get(j).cloned().unwrap();
+            unsafe{(*p.as_ptr()).val = right_val};
+            unsafe{(*q.as_ptr()).val = left_val};
+            unsafe{if let Some(x) = (*p.as_ptr()).next {p = x}}
+            unsafe{if let Some(x) = (*q.as_ptr()).prev {q = x}}
+            i += 1;
+            j -= 1;
+        }
 	}
 }
 
 impl<T> Display for LinkedList<T>
 where
-    T: Display,
+    T: Display
 {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self.start {
