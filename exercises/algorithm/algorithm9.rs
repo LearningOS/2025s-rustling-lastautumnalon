@@ -2,11 +2,9 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
-
 pub struct Heap<T>
 where
     T: Default,
@@ -33,17 +31,24 @@ where
     }
 
     pub fn is_empty(&self) -> bool {
-        self.len() == 0
+        self.len() == 1
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.items.push(value);
+        self.count += 1;
 
-        self.heapify(idx);
-    }
+        let mut current = self.count;
 
-    fn heapify(&mut self, idx: usize) {
-
+        while current > 1 {
+            let parent = current / 2;
+            if (self.comparator)(&self.items[current], &self.items[parent]) {
+                self.items.swap(current,parent);
+                current = parent;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -63,8 +68,7 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        0
     }
 }
 
@@ -90,8 +94,36 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count == 0 {
+            return None;
+        }
+
+        self.items.swap(1,self.count);
+        let result = self.items.pop();
+        self.count -= 1;
+
+        let mut current = 1;
+        loop {
+            let left = self.left_child_idx(current);
+            let right = self.right_child_idx(current);
+            let mut target = current;
+
+            if left <= self.count && (self.comparator)(&self.items[left], &self.items[target]) {
+                target = left;
+            }
+            if right <= self.count && (self.comparator)(&self.items[right],&self.items[target]) {
+                target = right;
+            }
+
+            if target != current {
+                self.items.swap(current, target);
+                current = target;
+            } else {
+                break;
+            }
+        }
+
+        return result
     }
 }
 
@@ -135,6 +167,8 @@ mod tests {
         heap.add(2);
         heap.add(9);
         heap.add(11);
+
+        
         assert_eq!(heap.len(), 4);
         assert_eq!(heap.next(), Some(2));
         assert_eq!(heap.next(), Some(4));
