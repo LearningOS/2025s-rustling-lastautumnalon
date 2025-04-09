@@ -38,6 +38,12 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+
+        self.heapify(idx);
+    }
+
+    fn heapify(&mut self, idx: usize) {
+
     }
 
     fn parent_idx(&self, idx: usize) -> usize {

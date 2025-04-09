@@ -29,7 +29,16 @@ impl Graph for UndirectedGraph {
         &self.adjacency_table
     }
     fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+        if !self.adjacency_table.contains_key(edge.0) {
+            self.add_node(edge.0);
+        }
+        if !self.adjacency_table.contains_key(edge.1) {
+            self.add_node(edge.1);
+        }
+
+        self.adjacency_table.get_mut(edge.1).unwrap().push((edge.0.to_string(), edge.2));
+
+        self.adjacency_table.get_mut(edge.0).unwrap().push((edge.1.to_string(), edge.2));
     }
 }
 pub trait Graph {
@@ -38,11 +47,10 @@ pub trait Graph {
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
     fn add_node(&mut self, node: &str) -> bool {
         //TODO
+        self.adjacency_table_mutable().insert(node.to_string(),Vec::<(String, i32)>::new());
 		true
     }
-    fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
-    }
+    fn add_edge(&mut self, edge: (&str, &str, i32));
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
     }
@@ -69,6 +77,7 @@ mod test_undirected_graph {
         graph.add_edge(("a", "b", 5));
         graph.add_edge(("b", "c", 10));
         graph.add_edge(("c", "a", 7));
+        println!("{:?}",graph.edges());
         let expected_edges = [
             (&String::from("a"), &String::from("b"), 5),
             (&String::from("b"), &String::from("a"), 5),
