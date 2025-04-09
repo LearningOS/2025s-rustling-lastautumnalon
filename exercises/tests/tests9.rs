@@ -1,41 +1,29 @@
 // tests9.rs
 //
-// Rust is highly capable of sharing FFI interfaces with C/C++ and other statically compiled
-// languages, and it can even link within the code itself! It makes it through the extern
-// block, just like the code below.
+// Rust 非常擅长与 C/C++ 以及其他静态编译语言共享 FFI（外部函数接口），甚至可以在代码内部进行链接！就像下面的代码一样，它通过 extern 块实现这一点。
 //
-// The short string after the `extern` keyword indicates which ABI the externally imported
-// function would follow. In this exercise, "Rust" is used, while other variants exists like
-// "C" for standard C ABI, "stdcall" for the Windows ABI.
+// `extern` 关键字后面的短字符串表示导入函数使用的 ABI（应用二进制接口）。在这个练习中使用的是 "Rust"，当然也存在其他的变体，比如标准 C 的 "C"，或 Windows 使用的 "stdcall"。
 //
-// The externally imported functions are declared in the extern blocks, with a semicolon to
-// mark the end of signature instead of curly braces. Some attributes can be applied to those
-// function declarations to modify the linking behavior, such as #[link_name = ".."] to
-// modify the actual symbol names.
+// 在 extern 块中声明要导入的函数时，用分号（;）结束函数签名，而不是使用花括号。一些属性可以应用到这些函数声明上以修改链接行为，比如 `#[link_name = ".."]`，它可以修改实际使用的符号名。
 //
-// If you want to export your symbol to the linking environment, the `extern` keyword can
-// also be marked before a function definition with the same ABI string note. The default ABI
-// for Rust functions is literally "Rust", so if you want to link against pure Rust functions,
-// the whole extern term can be omitted.
+// 如果你想将一个符号导出到链接环境中，也可以在函数定义前加上 `extern` 关键字，并指定 ABI 字符串。Rust 函数的默认 ABI 就是 "Rust"，所以如果你只是在不同 Rust 模块之间链接，甚至可以省略整个 extern。
 //
-// Rust mangles symbols by default, just like C++ does. To suppress this behavior and make
-// those functions addressable by name, the attribute #[no_mangle] can be applied.
+// Rust 默认会对函数名进行“符号重整”（mangling），这与 C++ 的做法类似。为了禁止这种行为并使函数可以通过名称进行链接，可以使用属性 `#[no_mangle]`。
 //
-// In this exercise, your task is to make the testcase able to call the `my_demo_function` in
-// module Foo. the `my_demo_function_alias` is an alias for `my_demo_function`, so the two
-// line of code in the testcase should call the same function.
+// 在这个练习中，你的任务是让测试代码可以调用模块 Foo 中的 `my_demo_function`。`my_demo_function_alias` 是 `my_demo_function` 的别名，所以测试用例中的两行代码应该调用的是同一个函数。
 //
-// You should NOT modify any existing code except for adding two lines of attributes.
+// 你**不能**修改任何现有代码，除了添加两行属性。
 
-// I AM NOT DONE
 
 extern "Rust" {
     fn my_demo_function(a: u32) -> u32;
+    #[link_name="my_demo_function"]
     fn my_demo_function_alias(a: u32) -> u32;
 }
 
 mod Foo {
     // No `extern` equals `extern "Rust"`.
+    #[no_mangle]
     fn my_demo_function(a: u32) -> u32 {
         a
     }
